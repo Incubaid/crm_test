@@ -113,5 +113,4 @@ db.prod
 db.dev
 db.testing
 
-# migrations
-migrations
+
