@@ -24,6 +24,7 @@ from crm.link.models import Link as LinkModel
 from crm.project.models import Project as ProjectModel
 from crm.sprint.models import Sprint as SprintModel
 from crm.task.models import Task as TaskModel
+from crm.address.models import Address as AddressModel
 from crm.message.models import Message as MessageModel
 from crm.comment.models import Comment as CommentModel
 from crm.contact.models import Contact as ContactModel
@@ -408,22 +409,19 @@ class InlineImageModelForm(InlineFormAdmin):
 
 class ContactModelView(EnhancedModelView):
     form_rules = (
-        'firstname', 'lastname', 'images', 'description', 'bio', 'belief_statement',
-        FieldSet(['street_number', 'street_name',
-                  'zip_code', 'country']),
+        'firstname', 'lastname',  'addresses', 'images', 'description', 'bio', 'belief_statement',
+
         'emails', 'telephones', 'companies', 'message_channels',
         'deals', 'comments', 'tasks', 'projects', 'messages', 'sprints', 'links', 'owner', 'ownerbackup')
 
     column_details_list = (
         'firstname', 'lastname', 'description', 'images', 'bio', 'belief_statement',
-        'address',
+        'addresses',
         'emails', 'telephones', 'companies', 'message_channels',
         'deals', 'comments', 'tasks', 'projects', 'messages', 'sprints', 'links', 'owner', 'ownerbackup', 'author_last', 'author_original', 'updated_at')
 
     form_edit_rules = (
-        'firstname', 'lastname', 'images', 'description', 'bio', 'belief_statement',
-        FieldSet(['street_number', 'street_name',
-                  'zip_code', 'country']),
+        'firstname', 'lastname', 'addresses', 'images', 'description', 'bio', 'belief_statement',
         'emails', 'telephones', 'companies', 'tasks', 'deals', 'messages',
         'comments', 'links',
         'message_channels', 'owner', 'ownerbackup')
@@ -438,6 +436,8 @@ class ContactModelView(EnhancedModelView):
     column_sortable_list = ('firstname', 'lastname')
 
     inline_models = [
+        (AddressModel, {'form_columns': [
+            'id', 'street_name', 'street_number', 'zip_code', 'country', ]}),
         InlineImageModelForm(),
         (TaskModel, {'form_columns': [
             'id', 'title', 'description', 'type', 'priority', 'assignee']}),
