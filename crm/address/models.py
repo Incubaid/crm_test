@@ -13,7 +13,6 @@ class Address(db.Model, BaseModel, RootModel):
 
     street_number = db.Column(
         db.String(255),
-        nullable=""
     )
 
     street_name = db.Column(
@@ -35,6 +34,10 @@ class Address(db.Model, BaseModel, RootModel):
     contact_id = db.Column(
         db.String(5),
         db.ForeignKey('contacts.id')
+    )
+    company_id = db.Column(
+        db.String(5),
+        db.ForeignKey('companies.id')
     )
 
     @property

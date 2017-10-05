@@ -458,7 +458,7 @@ class ContactModelView(EnhancedModelView):
 
 class CompanyModelView(EnhancedModelView):
     form_rules = (
-        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website',
+        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website', 'addresses',
         'deals', 'contacts', 'messages', 'tasks', 'links', 'comments', 'owner', 'ownerbackup')
 
     column_filters = (
@@ -466,11 +466,11 @@ class CompanyModelView(EnhancedModelView):
         'deals', 'contacts', 'messages', 'tasks', 'links', 'comments', 'owner', 'ownerbackup',)
 
     column_details_list = (
-        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website',
+        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website', 'addresses',
         'deals', 'contacts', 'messages', 'tasks', 'comments', 'links', 'owner', 'ownerbackup', 'author_last', 'author_original', 'updated_at')
 
     form_edit_rules = (
-        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website', 'contacts', 'messages', 'tasks', 'deals',
+        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website', 'addresses', 'contacts', 'messages', 'tasks', 'deals',
         'comments', 'links', 'owner', 'ownerbackup')
 
     column_searchable_list = (
@@ -479,6 +479,8 @@ class CompanyModelView(EnhancedModelView):
     column_sortable_list = ('name',)
 
     inline_models = [
+        (AddressModel, {'form_columns': [
+            'id', 'street_name', 'street_number', 'zip_code', 'country', ]}),
         (TaskModel, {'form_columns': [
             'id', 'title', 'description', 'type', 'priority', 'assignee']}),
         (MessageModel, {'form_columns': [
