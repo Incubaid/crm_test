@@ -87,6 +87,8 @@ class Deal(db.Model, BaseModel, RootModel):
     is_paid = db.Column(
         db.Boolean()
     )
+    shipping_address = db.relationship(
+        "Address", backref="deal")
 
     def __str__(self):
         return self.name
