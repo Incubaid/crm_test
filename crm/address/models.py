@@ -39,6 +39,10 @@ class Address(db.Model, BaseModel, RootModel):
         db.String(5),
         db.ForeignKey('companies.id')
     )
+    deal_id = db.Column(
+        db.String(5),
+        db.ForeignKey('deals.id')
+    )
 
     @property
     def formatted_address(self):

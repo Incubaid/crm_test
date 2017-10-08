@@ -409,19 +409,19 @@ class InlineImageModelForm(InlineFormAdmin):
 
 class ContactModelView(EnhancedModelView):
     form_rules = (
-        'firstname', 'lastname',  'addresses', 'images', 'description', 'bio', 'belief_statement',
+        'firstname', 'lastname',  'address', 'images', 'description', 'bio', 'belief_statement',
 
         'emails', 'telephones', 'companies', 'message_channels',
         'deals', 'comments', 'tasks', 'projects', 'messages', 'sprints', 'links', 'owner', 'ownerbackup')
 
     column_details_list = (
         'firstname', 'lastname', 'description', 'images', 'bio', 'belief_statement',
-        'addresses',
+        'address',
         'emails', 'telephones', 'companies', 'message_channels',
         'deals', 'comments', 'tasks', 'projects', 'messages', 'sprints', 'links', 'owner', 'ownerbackup', 'author_last', 'author_original', 'updated_at')
 
     form_edit_rules = (
-        'firstname', 'lastname', 'addresses', 'images', 'description', 'bio', 'belief_statement',
+        'firstname', 'lastname', 'address', 'images', 'description', 'bio', 'belief_statement',
         'emails', 'telephones', 'companies', 'tasks', 'deals', 'messages',
         'comments', 'links',
         'message_channels', 'owner', 'ownerbackup')
@@ -458,7 +458,7 @@ class ContactModelView(EnhancedModelView):
 
 class CompanyModelView(EnhancedModelView):
     form_rules = (
-        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website', 'addresses',
+        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website', 'address',
         'deals', 'contacts', 'messages', 'tasks', 'links', 'comments', 'owner', 'ownerbackup')
 
     column_filters = (
@@ -466,11 +466,11 @@ class CompanyModelView(EnhancedModelView):
         'deals', 'contacts', 'messages', 'tasks', 'links', 'comments', 'owner', 'ownerbackup',)
 
     column_details_list = (
-        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website', 'addresses',
+        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website', 'address',
         'deals', 'contacts', 'messages', 'tasks', 'comments', 'links', 'owner', 'ownerbackup', 'author_last', 'author_original', 'updated_at')
 
     form_edit_rules = (
-        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website', 'addresses', 'contacts', 'messages', 'tasks', 'deals',
+        'name', 'description', 'emails', 'telephones', 'vatnumber', 'website', 'address', 'contacts', 'messages', 'tasks', 'deals',
         'comments', 'links', 'owner', 'ownerbackup')
 
     column_searchable_list = (
@@ -528,15 +528,15 @@ class OrganizationModelView(EnhancedModelView):
 
 class DealModelView(EnhancedModelView):
     column_details_list = ('id', 'name', 'description', 'amount', 'currency', 'deal_type', 'deal_state', 'is_paid',
-                           'contact', 'company', 'closed_at', 'tasks', 'messages', 'links', 'comments', 'author_last', 'author_original', 'updated_at')
+                           'shipping_address', 'contact', 'company', 'closed_at', 'tasks', 'messages', 'links', 'comments', 'author_last', 'author_original', 'updated_at')
     column_filters = ('id', 'name', 'amount', 'currency', 'deal_type', 'deal_state',
                       'contact', 'company', 'closed_at', 'tasks', 'messages', 'comments', 'is_paid')
 
     form_rules = ('name', 'amount', 'currency', 'deal_type', 'deal_state',
-                  'contact', 'company', 'comments')
+                  'shipping_address', 'contact', 'company', 'comments')
 
     form_edit_rules = ('name', 'description', 'amount', 'currency', 'deal_type', 'deal_state',
-                       'contact', 'company', 'tasks', 'messages', 'links', 'comments', 'is_paid')
+                       'shipping_address', 'contact', 'company', 'tasks', 'messages', 'links', 'comments', 'is_paid')
 
     column_list = ('name', 'amount', 'currency',
                    'deal_type', 'deal_state')
@@ -547,6 +547,8 @@ class DealModelView(EnhancedModelView):
                             'deal_type', 'deal_state')
 
     inline_models = [
+        (AddressModel, {'form_columns': [
+            'id', 'street_name', 'street_number', 'zip_code', 'country', ]}),
         (TaskModel, {'form_columns': [
             'id', 'title', 'type', 'priority', 'assignee']}),
         (MessageModel, {'form_columns': ['id', 'title', 'content']}),
