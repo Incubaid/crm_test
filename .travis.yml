@@ -12,7 +12,6 @@ addons:
     packages:
       - python3-dev
       - libffi-dev
-      - virtualenv
       - build-essential
 
 notification:
