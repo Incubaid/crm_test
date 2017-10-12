@@ -1,11 +1,13 @@
 import os
-import crm
 import unittest
 import tempfile
 import sys
 
 crm_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, crm_base)
+import crm
+
+
 
 
 class BaseTestCase(unittest.TestCase):

@@ -1,0 +1,6 @@
+sudo: false
+language: python
+python:
+  - "3.5"
+install: .travis/prepare.sh
+script: run_tests.sh
