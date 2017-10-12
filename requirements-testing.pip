@@ -40,7 +40,6 @@ six==1.11.0
 SQLAlchemy==1.1.13
 SQLAlchemy-Utils==0.32.16
 typing==3.6.2
-tox-travis
 ujson==1.35
 urllib3==1.22
 uWSGI==2.0.15
