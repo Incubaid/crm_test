@@ -7,6 +7,18 @@ CountriesEnum = enum.Enum('Countries', {v: v for k, v in countries.items()})
 CountriesEnum.__str__ = lambda self: self.value
 
 
+# class Subgroup(enum.Enum):
+#     Ambassadors, Investors, Hosters, Members, Public = range(5)
+
+class Subgroup(db.Model, BaseModel, RootModel):
+    __tablename__ = "subgroups"
+    groupname = db.Column(db.String(20), nullable=False)
+    contact_id = db.Column(db.String(5), db.ForeignKey("contacts.id"))
+
+    def __str__(self):
+        return self.groupname
+
+
 class Contact(db.Model, BaseModel, RootModel):
 
     __tablename__ = "contacts"
@@ -46,7 +58,7 @@ class Contact(db.Model, BaseModel, RootModel):
     )
 
     street_number = db.Column(
-        db.Integer
+        db.Integer()
     )
 
     zip_code = db.Column(
@@ -105,6 +117,17 @@ class Contact(db.Model, BaseModel, RootModel):
     telephones = db.Column(
         db.Text()
     )
+    tf_app = db.Column(
+        db.Boolean()
+    )
+    tf_web = db.Column(
+        db.Boolean()
+    )
+    referral_code = db.Column(
+        db.String(255),
+    )
+    subgroups = db.relationship("Subgroup", backref="contact")
+    addresses = db.relationship("Address", backref="contact")
 
     @property
     def address(self):
