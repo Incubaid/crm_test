@@ -4,7 +4,6 @@ cffi==1.11.0
 chardet==3.0.4
 click==6.7
 coverage==4.4.1
--e git+git@github.com:Incubaid/crm.git@7975769f6b9618a510d6ce2a2a4f88a435f719b7#egg=crm
 decorator==4.1.2
 ecdsa==0.13
 Faker==0.7.18
