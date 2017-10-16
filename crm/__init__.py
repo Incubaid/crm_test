@@ -93,6 +93,23 @@ class CRM(object):
         # New secret key each time app starts, to clear old sessions
         self._app.secret_key = os.urandom(32)
 
+
+    @staticmethod
+    def _load_modules(module_type):
+        """
+        Walk through the base directory of the application and load the modules based on a specific type
+
+        @param module_type: type of the module, e.g: models, views, graphql...
+        """
+        base_dir= '{}/'.format(os.path.dirname(os.path.dirname(__file__)))
+        for root, _ , files in os.walk(os.path.dirname(__file__)):
+            for file_ in files:
+                if file_ != '{}.py'.format(module_type):
+                    continue
+                package = root.replace(base_dir, '').replace('/', '.')
+                import_module('{}.{}'.format(package, module_type))
+
+
     @staticmethod
     def init_db():
         """
@@ -102,13 +119,8 @@ class CRM(object):
 
         Then we can get all models and register before_insert hook
         """
-        base_dir= '{}/'.format(os.path.dirname(os.path.dirname(__file__)))
-        for root, _ , files in os.walk(os.path.dirname(__file__)):
-            for file_ in files:
-                if file_ != 'models.py':
-                    continue
-                package = root.replace(base_dir, '').replace('/', '.')
-                import_module('%s.models' % package)
+        CRM._load_modules(module_type='models')
+        
 
     def inti_admin_app(self):
         """
@@ -164,13 +176,7 @@ class CRM(object):
         Import all views containing http actions to guarantee all
         routes are initialized
         """
-        base_dir= '{}/'.format(os.path.dirname(os.path.dirname(__file__)))
-        for root, _ , files in os.walk(os.path.dirname(__file__)):
-            for file_ in files:
-                if file_ != 'views.py':
-                    continue
-                package = root.replace(base_dir, '').replace('/', '.')
-                import_module('%s.views' % package)
+        CRM._load_modules(module_type='views')
 
 
     @property
@@ -193,13 +199,7 @@ class CRM(object):
         # All Queries under ::  BaseQuery.__subclasses__()
         # All Types under :: SQLAlchemyObjectType.__subclasses__()
         # All Mutations under :: BaseMutation.__subclasses__()
-        base_dir= '{}/'.format(os.path.dirname(os.path.dirname(__file__)))
-        for root, _ , files in os.walk(os.path.dirname(__file__)):
-            for file_ in files:
-                if file_ != 'graphql.py':
-                    continue
-                package = root.replace(base_dir, '').replace('/', '.')
-                import_module('%s.graphql' % package)
+        CRM._load_modules(module_type='graphql')
 
         schema = graphene.Schema(
 
