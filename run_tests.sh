@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-python -m unittest discover --start-directory tests
+nosetests --with-coverage --cover-package=crm --cover-html --cover-erase

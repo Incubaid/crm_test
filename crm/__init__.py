@@ -102,11 +102,12 @@ class CRM(object):
 
         Then we can get all models and register before_insert hook
         """
-        for root, dir, files in os.walk('crm'):
-            for file in files:
-                if file != 'models.py':
+        base_dir= '{}/'.format(os.path.dirname(os.path.dirname(__file__)))
+        for root, _ , files in os.walk(os.path.dirname(__file__)):
+            for file_ in files:
+                if file_ != 'models.py':
                     continue
-                package = root.replace('/', '.')
+                package = root.replace(base_dir, '').replace('/', '.')
                 import_module('%s.models' % package)
 
     def inti_admin_app(self):
@@ -163,12 +164,14 @@ class CRM(object):
         Import all views containing http actions to guarantee all
         routes are initialized
         """
-        for root, dirs, files in os.walk('crm'):
-            for file in files:
-                if file != 'views.py':
+        base_dir= '{}/'.format(os.path.dirname(os.path.dirname(__file__)))
+        for root, _ , files in os.walk(os.path.dirname(__file__)):
+            for file_ in files:
+                if file_ != 'views.py':
                     continue
-                package = root.replace('/', '.')
+                package = root.replace(base_dir, '').replace('/', '.')
                 import_module('%s.views' % package)
+
 
     @property
     def graphql_schema(self):
@@ -190,11 +193,12 @@ class CRM(object):
         # All Queries under ::  BaseQuery.__subclasses__()
         # All Types under :: SQLAlchemyObjectType.__subclasses__()
         # All Mutations under :: BaseMutation.__subclasses__()
-        for root, dirs, files in os.walk('crm'):
-            for file in files:
-                if file != 'graphql.py':
+        base_dir= '{}/'.format(os.path.dirname(os.path.dirname(__file__)))
+        for root, _ , files in os.walk(os.path.dirname(__file__)):
+            for file_ in files:
+                if file_ != 'graphql.py':
                     continue
-                package = root.replace('/', '.')
+                package = root.replace(base_dir, '').replace('/', '.')
                 import_module('%s.graphql' % package)
 
         schema = graphene.Schema(

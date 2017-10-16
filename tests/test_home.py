@@ -2,7 +2,7 @@
 Tests for home module
 """
 import unittest
-from crm_tests import BaseTestCase
+from tests.base_tests import BaseTestCase
 
 class HomeTest(BaseTestCase):
     """
@@ -13,6 +13,7 @@ class HomeTest(BaseTestCase):
         Test home page
         """
         rv = self.app.get('/')
+        assert rv.status_code == 200
         assert b'Quick links' in rv.data
 
 
