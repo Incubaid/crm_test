@@ -5,7 +5,9 @@ from graphene.types.inputobjecttype import InputObjectType
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from graphql.error.base import GraphQLError
 
-from crm.graphql import BaseMutation, BaseQuery, CRMConnectionField
+from crm.address.models import Address
+from crm.contact.models import Subgroup
+from crm.graphql import BaseMutation, BaseQuery, CRMConnectionField, AddressArguments
 from .models import Contact
 from crm import db
 
@@ -38,7 +40,7 @@ class ContactQuery(BaseQuery):
         return ContactType.get_query(context).filter_by(id=uid).first()
 
     class Meta:
-        interfaces = (relay.Node,)
+        interfaces = (relay.Node, )
 
 
 class CreateContactArguments(InputObjectType):
@@ -57,6 +59,8 @@ class CreateContactArguments(InputObjectType):
     tf_web = graphene.Boolean()
     country = graphene.String()
     message_channels = graphene.String()
+    sub_groups = graphene.List(graphene.String)
+    addresses = graphene.List(AddressArguments)
 
 
 class UpdateContactContactArguments(CreateContactArguments):
@@ -84,9 +88,14 @@ class CreateContacts(graphene.Mutation):
 
         # 'before_insert' hooks won't work with db.session.bulk_save_objects
         # we need to find a way to get hooks to work with bulk_save_objects @todo
+        records = kwargs.get('records', [])
         objs = []
-        for data in kwargs.get('records', []):
+        for data in records:
+            addresses = data.pop('addresses') if 'addresses' in data else []
+            subgroups = data.pop('sub_groups') if 'sub_groups' in data else []
             c = Contact(**data)
+            c.addresses = [ Address(**address) for address in addresses]
+            c.subgroups = [Subgroup(groupname=subgroup) for subgroup in subgroups]
             db.session.add(c)
             objs.append(c)
         try:
@@ -118,9 +127,22 @@ class UpdateContacts(graphene.Mutation):
         records = kwargs.get('records', [])
         for data in records:
             data['id'] = data.pop('uid')
+            addresses = data.pop('addresses') if 'addresses' in data else []
+            subgroups = data.pop('sub_groups') if 'sub_groups' in data else []
+            c = Contact.query.filter_by(id=data['id']).first()
 
+            if not c:
+                raise GraphQLError('Invalid id (%s)' % data['id'])
+
+            for k, v in data.items():
+                setattr(c, k, v)
+
+            if addresses:
+                c.addresses = [Address(**address) for address in addresses]
+            if subgroups:
+                c.subgroups = [Subgroup(groupname=subgroup) for subgroup in subgroups]
+            db.session.add(c)
         try:
-            db.session.bulk_update_mappings(Contact, records)
             db.session.commit()
             return cls(ok=True, ids=[record['id'] for record in records])
         except Exception as e:

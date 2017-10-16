@@ -19,7 +19,18 @@ class Address(db.Model, BaseModel, RootModel):
         db.String(255),
         default=""
     )
+
     description = db.Column(
+        db.Text(),
+        default=""
+    )
+
+    city = db.Column(
+        db.Text(),
+        default=""
+    )
+
+    state = db.Column(
         db.Text(),
         default=""
     )
@@ -28,8 +39,10 @@ class Address(db.Model, BaseModel, RootModel):
         db.String(255)
     )
 
-    country = db.Column(db.Enum(CountriesEnum),
-                        default=CountriesEnum.Belgium)
+    country = db.Column(
+        db.Enum(CountriesEnum),
+        default=CountriesEnum.Belgium
+    )
 
     contact_id = db.Column(
         db.String(5),
@@ -46,7 +59,24 @@ class Address(db.Model, BaseModel, RootModel):
 
     @property
     def formatted_address(self):
-        return "{} {} {}".format(self.street_number or '', self.street_name or '', self.country or '').strip()
+        address = ''
+        if self.street_name:
+            if self.street_number:
+                address += '%s %s, ' % (self.street_number, self.street_name)
+            else:
+                address += '%s, ' % self.street_name
+
+        if self.state:
+            address += '%s, ' % self.state
+        if self.city:
+            address += '%s, ' % self.city
+        if self.country:
+            address += str(self.country)
+
+        if self.zip_code:
+            address += ' (zip code: %s)' % self.zip_code
+
+        return address
 
     def __str__(self):
         return self.formatted_address

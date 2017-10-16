@@ -2,13 +2,10 @@ import os
 import uuid
 import csv
 from io import StringIO
-from flask import request, flash
-from flask_admin.babel import gettext, ngettext, lazy_gettext
-from flask_admin.model.fields import InlineFieldList, InlineModelFormField
+from flask import request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import AdminIndexView
 from flask_admin.base import expose
-from flask_admin.form.rules import FieldSet
 from flask_admin.contrib.sqla.tools import is_relationship
 from flask_admin.contrib.sqla import tools
 from flask_admin._compat import string_types
@@ -440,7 +437,7 @@ class ContactModelView(EnhancedModelView):
         'comments', 'links',
         'message_channels', 'subgroups', 'tf_app', 'tf_web', 'referral_code', 'owner', 'ownerbackup')
 
-    column_filters = ('firstname', 'lastname', 'description', 'emails', 'telephones', 'message_channels', 'referral_code',
+    column_filters = ('firstname', 'lastname', 'description', 'emails', 'telephones', 'addresses.country', 'message_channels', 'referral_code',
                       'deals', 'comments', 'tasks', 'projects', 'companies', 'messages', 'sprints', 'links', 'owner',
                       'ownerbackup')
     column_searchable_list = ('firstname', 'lastname',)
@@ -452,13 +449,13 @@ class ContactModelView(EnhancedModelView):
     inline_models = [
         InlineImageModelForm(),
         (AddressModel, {'form_columns': [
-            'id', 'street_name', 'street_number', 'zip_code', 'country', ]}),
+            'id', 'street_name', 'street_number', 'zip_code', 'country', 'city', 'state']}),
         (TaskModel, {'form_columns': [
             'id', 'title', 'description', 'type', 'priority', 'assignee']}),
         (MessageModel, {'form_columns': [
             'id', 'title', 'content', 'channel']}),
         (DealModel, {'form_columns': [
-            'id', 'name', 'amount', 'currency', 'deal_type']}),
+            'id', 'name', 'amount', 'currency', 'deal_type', 'description']}),
         (CommentModel, {'form_columns': ['id', 'content']}),
         (LinkModel, {'form_columns': [
             'id', 'url', ]}), ]
@@ -494,7 +491,7 @@ class CompanyModelView(EnhancedModelView):
 
     inline_models = [
         (AddressModel, {'form_columns': [
-            'id', 'street_name', 'street_number', 'zip_code', 'country', ]}),
+            'id', 'street_name', 'street_number', 'zip_code', 'country', 'city', 'state']}),
         (TaskModel, {'form_columns': [
             'id', 'title', 'description', 'type', 'priority', 'assignee']}),
         (MessageModel, {'form_columns': [
@@ -544,7 +541,7 @@ class DealModelView(EnhancedModelView):
     column_details_list = ('id', 'name', 'description', 'amount', 'currency', 'deal_type', 'deal_state', 'shipping_address', 'is_paid',
                            'contact', 'company', 'closed_at', 'referral_code', 'tasks', 'messages', 'links', 'comments', 'author_last', 'author_original', 'updated_at')
     column_filters = ('id', 'name', 'amount', 'currency', 'deal_type', 'deal_state',
-                      'contact', 'company', 'closed_at', 'tasks', 'messages', 'comments', 'is_paid', 'referral_code')
+                      'contact', 'company', 'closed_at', 'tasks', 'messages', 'comments', 'is_paid', 'referral_code', 'updated_at')
 
     form_rules = ('name', 'amount', 'currency', 'deal_type', 'deal_state', 'shipping_address',
                   'contact', 'company', 'referral_code', 'comments')
@@ -553,18 +550,18 @@ class DealModelView(EnhancedModelView):
                        'contact', 'company', 'tasks', 'messages', 'links', 'comments', 'is_paid', 'closed_at', 'referral_code')
 
     column_list = ('name', 'amount', 'currency',
-                   'deal_type', 'deal_state')
+                   'deal_type', 'deal_state', 'updated_at')
     column_searchable_list = (
         'id', 'name', 'amount', 'currency', 'deal_type', 'deal_state')
 
     column_sortable_list = ('name', 'amount', 'currency',
-                            'deal_type', 'deal_state')
+                            'deal_type', 'deal_state', 'updated_at')
 
     inline_models = [
         (TaskModel, {'form_columns': [
             'id', 'title', 'type', 'priority', 'assignee']}),
         (AddressModel, {'form_columns': [
-            'id', 'street_name', 'street_number', 'zip_code', 'country', ]}),
+            'id', 'street_name', 'street_number', 'zip_code', 'country', 'city', 'state']}),
         (MessageModel, {'form_columns': ['id', 'title', 'content']}),
         (CommentModel, {'form_columns': ['id', 'content']}),
         (LinkModel, {'form_columns': [
